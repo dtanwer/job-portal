@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  backend:
+    container_name: example-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dependency-base
+    ports:
+      - ${APP_FORWARD_PORT:-8080}:${APP_PORT:-8080}
+    volumes:
+      - .:/app
+    networks:
+      - example_network
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    expose:
+      - ${APP_PORT:-8080}
+
+networks:
+  example_network:
+    name: example-shared-network
+    external: true
+
+volumes:
+  postgresql-data:
+    driver: local
+  pgadmin-data:
+    driver: local
+
+#docker network create example-shared-network
